@@ -18,7 +18,7 @@ def parser() -> argparse.ArgumentParser.parse_args:
         3. python main.py template AbsPath/To/Template/Folder 
         """,
         dest="template",
-        default="",
+        default=None,
         type=str,
         nargs="*"
     )
