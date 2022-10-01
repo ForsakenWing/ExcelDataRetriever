@@ -1,9 +1,8 @@
-from src.excel_parser import filename_handler, filepath_handler, create_template
+from src import run_converter, create_template
 
 def main():
-    filename_handler()
-    filepath_handler()
     create_template()
+    run_converter()
 
 if __name__ == "__main__":
     main()
