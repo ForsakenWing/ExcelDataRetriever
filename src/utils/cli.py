@@ -39,8 +39,8 @@ def parser() -> argparse.ArgumentParser.parse_args:
         metavar="Filename e.g. IamSheet.xlsx"
     )
     _parser.add_argument(
-        "--result_output",
-        help="Path for result output",
+        "--excel-output",
+        help="Path to JSON in which is parsed data from excel file. By default in DATA folder",
         type=str,
         default="",
         nargs=1,
@@ -53,5 +53,5 @@ class Args:
     __args = parser()
     filepath = __args.filepath
     filename = __args.filename
-    result_output = __args.result_output
+    path_to_dump_excel = __args.excel_output
     template = __args.template
