@@ -1,9 +1,17 @@
-from src import run_parser, create_template
-from src.utils.excel_parser import write_excel_output
+from fastapi import FastAPI, UploadFile
+from src import files_handler
+from uvicorn import run
+from openpyxl import load_workbook
+import logging
 
-def main():
-    create_template()
-    write_excel_output(run_parser())
+app = FastAPI()
+
+
+@app.post("/uploadfiles/")
+async def create_upload_files(files: list[UploadFile]):
+    logging.info(files)
+    res = await files_handler(files)
+    return res
 
 if __name__ == "__main__":
-    main()
+    run(app, host="0.0.0.0", port=8080)
