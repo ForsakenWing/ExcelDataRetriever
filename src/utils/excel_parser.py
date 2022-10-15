@@ -1,10 +1,20 @@
 from openpyxl import load_workbook, Workbook
 from openpyxl.utils.exceptions import InvalidFileException
-from .cli import Args
+# from .cli import Args
 import os
 import logging
 from typing import Literal
 from json import dumps
+
+class mock:
+
+    def __getattribute__(self, attr):
+        try:
+            return object.__getattribute__(self, attr)
+        except AttributeError:
+            return ""
+
+Args = mock()
 
 logging.basicConfig(format="%(levelname)s - %(message)s", level=logging.ERROR)    
 def list_to_str_serializer(lst: list[str]) -> str:

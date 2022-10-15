@@ -1,7 +1,6 @@
 from fastapi import FastAPI, UploadFile
 from src import files_handler
 from uvicorn import run
-from openpyxl import load_workbook
 import logging
 
 app = FastAPI()
