@@ -1,20 +1,28 @@
 from openpyxl import load_workbook, Workbook
 from openpyxl.utils.exceptions import InvalidFileException
-# from .cli import Args
+from .cli import parser
 import os
 import logging
 from typing import Literal
 from json import dumps
+from os import environ
 
-class mock:
+class Mock:
 
     def __getattribute__(self, attr):
         try:
             return object.__getattribute__(self, attr)
         except AttributeError:
             return ""
+class Args:
 
-Args = mock()
+    def __init__(self, args: parser):
+        filepath = args.filepath
+        filename = args.filename
+        path_to_dump_excel = args.excel_output
+        template = args.template
+
+args = Args(parser()) if environ.get("CLI") else Mock()
 
 logging.basicConfig(format="%(levelname)s - %(message)s", level=logging.ERROR)    
 def list_to_str_serializer(lst: list[str]) -> str:
@@ -25,7 +33,7 @@ def list_to_str_serializer(lst: list[str]) -> str:
         logging.info("Serializing arguments...")
     return tmp
         
-def filename_handler(filename: str = list_to_str_serializer(Args.filename)) -> load_workbook:
+def filename_handler(filename: str = list_to_str_serializer(args.filename)) -> load_workbook:
     if not check_xlsx_format(filename):
         dir, tail = os.path.split(filename)
         if not dir:
@@ -61,7 +69,7 @@ def collect_excel_files(filepath: str) -> list[str] | None:
                  files_result.append(os.path.join(root, file))
     return files_result
                  
-def filepath_handler(filepath: str = list_to_str_serializer(Args.filepath)) -> list[str] | None | str:
+def filepath_handler(filepath: str = list_to_str_serializer(args.filepath)) -> list[str] | None | str:
     if os.path.isdir(filepath):
         if os.path.isabs(filepath):
             files_result = collect_excel_files(filepath)
@@ -108,7 +116,7 @@ def direct_output_to_file(
         with open(os.path.join(dirname, filename), "w") as file:
             file.write(output)
 
-def create_template(path: str = Args.template) -> None:
+def create_template(path: str = args.template) -> None:
     if path is None:
         return
     if not path:
@@ -139,7 +147,7 @@ def workbook_serializer(wb: Workbook):
             result.append(tmp)
 
 def run_parser() -> list[dict]:
-    if Args.filename and (workbook := filename_handler()):
+    if args.filename and (workbook := filename_handler()):
         return workbook_serializer(workbook)
     excel_files = filepath_handler()
     if isinstance(excel_files, Workbook):
@@ -149,7 +157,7 @@ def run_parser() -> list[dict]:
     return user_data
 
 
-def write_excel_output(data_to_dump, path: str = list_to_str_serializer(Args.path_to_dump_excel)) -> None:
+def write_excel_output(data_to_dump, path: str = list_to_str_serializer(args.path_to_dump_excel)) -> None:
     if type(data_to_dump) is list:
         data_to_dump = dumps(data_to_dump, indent=5)
     if not path:

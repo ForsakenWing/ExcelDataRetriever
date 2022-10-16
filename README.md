@@ -72,15 +72,20 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Run application
+Run application as CLI
 
 ```
-python main.py
+CLI=1 python main.py -h
 ```
 
-Also you can get help using -h option
+Run application as web-service without docker
 ```
-python main.py -h
+gunicorn --bind 0.0.0.0:8091 -k uvicorn.workers.UvicornWorker main:app
+```
+Run application as web-service with docker
+```
+docker build -t excel_parser .
+docker run -d -p 8075:8000 excel_parser
 ```
 
 ## 🔧 Running the tests <a name = "tests"></a>
